@@ -4,6 +4,13 @@ A fork of Cline, an autonomous coding agent, with some additional experimental f
 
 ## Experimental Features
 
+- Real-time chat synchronization between VSCode windows via WebSocket
+  - Messages sent in one window automatically appear in other connected windows
+  - Central dispatcher interface for monitoring and broadcasting messages
+  - Connection status and client tracking
+  - Configurable WebSocket host/port in settings
+  - Automatic reconnection and message acknowledgment
+  - Beautiful Tailwind CSS-based dispatcher interface
 - Drag and drop images into chats
 - Delete messages from chats
 - "Enhance prompt" button (OpenRouter models only for now)
@@ -60,7 +67,39 @@ To contribute to the project, start by exploring [open issues](https://github.co
     # Ex: code --install-extension bin/roo-cline-2.0.1.vsix
     ```
 
-5. Launch by pressing `F5` (or `Run`->`Start Debugging`) to open a new VSCode window with the extension loaded. (You may need to install the [esbuild problem matchers extension](https://marketplace.visualstudio.com/items?itemName=connor4312.esbuild-problem-matchers) if you run into issues building the project.)
+5. Install dependencies:
+   ```bash
+   npm install ws
+   ```
+
+6. Launch by pressing `F5` (or `Run`->`Start Debugging`) to open a new VSCode window with the extension loaded. (You may need to install the [esbuild problem matchers extension](https://marketplace.visualstudio.com/items?itemName=connor4312.esbuild-problem-matchers) if you run into issues building the project.)
+
+7. To enable real-time chat synchronization:
+   - Open Settings (gear icon)
+   - Find "Experimental Settings" section
+   - Enable "WebSocket Integration"
+   - Configure host/port if needed (defaults: localhost:8080)
+   - Click "Done" and restart the extension
+
+8. To use the dispatcher interface:
+   ```bash
+   # Open the dispatcher interface in your default browser
+   open src/services/websocket/dispatcher/index.html
+   ```
+
+   The dispatcher provides:
+   - Real-time connection status
+   - List of connected VSCode instances
+   - Central message broadcasting
+   - Message history with distinct styling
+   - Beautiful Tailwind CSS interface
+
+9. Test the real-time chat:
+   - Open multiple VSCode windows with the extension
+   - Launch the dispatcher interface
+   - Send messages from any window or the dispatcher
+   - Messages appear in all connected windows and dispatcher
+   - Monitor connections in the dispatcher's client list
 
 </details>
 

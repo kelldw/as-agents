@@ -20,6 +20,10 @@ export interface ExtensionMessage {
 		| "openAiModels"
 		| "mcpServers"
 		| "enhancedPrompt"
+		| "getWebSocketId"
+		| "webSocketId"
+		| "websocketMessage"
+		| "websocketSendAck"
 	text?: string
 	action?:
 		| "chatButtonClicked"
@@ -62,6 +66,9 @@ export interface ExtensionState {
 	preferredLanguage: string
 	writeDelayMs: number
 	terminalOutputLineLimit?: number
+	webSocketEnabled?: boolean
+	webSocketPort?: number
+	webSocketHost?: string
 }
 
 export interface ClineMessage {

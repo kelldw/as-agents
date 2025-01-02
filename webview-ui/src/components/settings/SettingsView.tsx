@@ -48,6 +48,12 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 		setScreenshotQuality,
 		terminalOutputLineLimit,
 		setTerminalOutputLineLimit,
+		webSocketEnabled,
+		setWebSocketEnabled,
+		webSocketPort,
+		setWebSocketPort,
+		webSocketHost,
+		setWebSocketHost,
 	} = useExtensionState()
 	const [apiErrorMessage, setApiErrorMessage] = useState<string | undefined>(undefined)
 	const [modelIdErrorMessage, setModelIdErrorMessage] = useState<string | undefined>(undefined)
@@ -79,6 +85,9 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 			vscode.postMessage({ type: "writeDelayMs", value: writeDelayMs })
 			vscode.postMessage({ type: "screenshotQuality", value: screenshotQuality ?? 75 })
 			vscode.postMessage({ type: "terminalOutputLineLimit", value: terminalOutputLineLimit ?? 500 })
+			vscode.postMessage({ type: "webSocketEnabled", bool: webSocketEnabled })
+			vscode.postMessage({ type: "webSocketPort", value: webSocketPort ?? 8080 })
+			vscode.postMessage({ type: "webSocketHost", text: webSocketHost ?? "localhost" })
 			onDone()
 		}
 	}
@@ -456,8 +465,56 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 				</div>
 
 				<div style={{ marginBottom: 5 }}>
-					<div style={{ marginBottom: 10 }}>
-						<div style={{ marginBottom: 15 }}>
+					<div style={{ marginBottom: 5 }}>
+						<div style={{ marginBottom: 10 }}>
+							<h3 style={{ color: "var(--vscode-foreground)", margin: 0, marginBottom: 15 }}>Experimental Settings</h3>
+							<div style={{ marginBottom: 15 }}>
+								<VSCodeCheckbox
+									checked={webSocketEnabled}
+									onChange={(e: any) => setWebSocketEnabled(e.target.checked)}
+								>
+									<span style={{ fontWeight: "500" }}>Enable WebSocket Integration</span>
+								</VSCodeCheckbox>
+								<p style={{
+									fontSize: "12px",
+									marginTop: "5px",
+									color: "var(--vscode-descriptionForeground)",
+								}}>
+									Enable real-time chat synchronization between VSCode windows via WebSocket
+								</p>
+	
+								{webSocketEnabled && (
+									<div style={{ marginTop: 10 }}>
+										<div style={{ marginBottom: 10 }}>
+											<label style={{ fontWeight: "500", display: "block", marginBottom: 5 }}>WebSocket Host</label>
+											<VSCodeTextField
+												value={webSocketHost}
+												onInput={(e: any) => setWebSocketHost(e.target.value)}
+												placeholder="localhost"
+												style={{ width: "100%" }}
+											/>
+										</div>
+										<div style={{ marginBottom: 10 }}>
+											<label style={{ fontWeight: "500", display: "block", marginBottom: 5 }}>WebSocket Port</label>
+											<VSCodeTextField
+												type="number"
+												value={webSocketPort?.toString()}
+												onInput={(e: any) => setWebSocketPort(parseInt(e.target.value))}
+												placeholder="8080"
+												style={{ width: "100%" }}
+											/>
+										</div>
+										<p style={{
+											fontSize: "12px",
+											marginTop: "5px",
+											color: "var(--vscode-descriptionForeground)",
+										}}>
+											Changes to WebSocket settings require a restart to take effect
+										</p>
+									</div>
+								)}
+							</div>
+	
 							<h3 style={{ color: "var(--vscode-foreground)", margin: 0, marginBottom: 15 }}>Browser Settings</h3>
 							<label style={{ fontWeight: "500", display: "block", marginBottom: 5 }}>Viewport size</label>
 							<select

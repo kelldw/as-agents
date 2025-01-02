@@ -41,6 +41,12 @@ export interface ExtensionStateContextType extends ExtensionState {
 	setScreenshotQuality: (value: number) => void
 	terminalOutputLineLimit?: number
 	setTerminalOutputLineLimit: (value: number) => void
+	webSocketEnabled?: boolean
+	setWebSocketEnabled: (value: boolean) => void
+	webSocketPort?: number
+	setWebSocketPort: (value: number) => void
+	webSocketHost?: string
+	setWebSocketHost: (value: string) => void
 }
 
 export const ExtensionStateContext = createContext<ExtensionStateContextType | undefined>(undefined)
@@ -61,6 +67,9 @@ export const ExtensionStateContextProvider: React.FC<{ children: React.ReactNode
 		browserViewportSize: "900x600",
 		screenshotQuality: 75,
 		terminalOutputLineLimit: 500,
+		webSocketEnabled: false,
+		webSocketPort: 8080,
+		webSocketHost: "localhost",
 	})
 	const [didHydrateState, setDidHydrateState] = useState(false)
 	const [showWelcome, setShowWelcome] = useState(false)
@@ -180,6 +189,9 @@ export const ExtensionStateContextProvider: React.FC<{ children: React.ReactNode
 		setWriteDelayMs: (value) => setState((prevState) => ({ ...prevState, writeDelayMs: value })),
 		setScreenshotQuality: (value) => setState((prevState) => ({ ...prevState, screenshotQuality: value })),
 		setTerminalOutputLineLimit: (value) => setState((prevState) => ({ ...prevState, terminalOutputLineLimit: value })),
+		setWebSocketEnabled: (value) => setState((prevState) => ({ ...prevState, webSocketEnabled: value })),
+		setWebSocketPort: (value) => setState((prevState) => ({ ...prevState, webSocketPort: value })),
+		setWebSocketHost: (value) => setState((prevState) => ({ ...prevState, webSocketHost: value })),
 	}
 
 	return <ExtensionStateContext.Provider value={contextValue}>{children}</ExtensionStateContext.Provider>
