@@ -24,6 +24,9 @@ export interface ExtensionMessage {
 		| "webSocketId"
 		| "websocketMessage"
 		| "websocketSendAck"
+	messageId?: string
+	timestamp?: number
+	status?: 'sent' | 'received' | 'error'
 	text?: string
 	action?:
 		| "chatButtonClicked"
@@ -69,6 +72,7 @@ export interface ExtensionState {
 	webSocketEnabled?: boolean
 	webSocketPort?: number
 	webSocketHost?: string
+	lastShownAnnouncementId?: string
 }
 
 export interface ClineMessage {
