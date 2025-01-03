@@ -1,6 +1,6 @@
 {
   "name": "roo-cline",
-  "displayName": "Roo Cline",
+  "displayName": "AS agents",
   "description": "A fork of Cline, an autonomous coding agent, with some added experimental configuration and automation features.",
   "publisher": "RooVeterinaryInc",
   "version": "2.2.38",
@@ -49,7 +49,7 @@
       "activitybar": [
         {
           "id": "roo-cline-ActivityBar",
-          "title": "Roo Cline",
+          "title": "AS agents",
           "icon": "$(rocket)"
         }
       ]
@@ -92,7 +92,7 @@
       {
         "command": "roo-cline.openInNewTab",
         "title": "Open In New Tab",
-        "category": "Roo Cline"
+        "category": "AS agents"
       }
     ],
     "menus": {
@@ -177,6 +177,7 @@
     "@types/jest": "^29.5.14",
     "@types/mocha": "^10.0.7",
     "@types/node": "20.x",
+    "@types/ws": "^8.5.13",
     "@typescript-eslint/eslint-plugin": "^7.14.1",
     "@typescript-eslint/parser": "^7.11.0",
     "@vscode/test-cli": "^0.0.9",
@@ -192,9 +193,9 @@
   },
   "dependencies": {
     "@anthropic-ai/bedrock-sdk": "^0.10.2",
-    "@aws-sdk/client-bedrock-runtime": "^3.706.0",
     "@anthropic-ai/sdk": "^0.26.0",
     "@anthropic-ai/vertex-sdk": "^0.4.1",
+    "@aws-sdk/client-bedrock-runtime": "^3.706.0",
     "@google/generative-ai": "^0.18.0",
     "@modelcontextprotocol/sdk": "^1.0.1",
     "@types/clone-deep": "^4.0.4",

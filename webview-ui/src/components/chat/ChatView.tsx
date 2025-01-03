@@ -2,6 +2,7 @@ import { VSCodeButton, VSCodeLink } from "@vscode/webview-ui-toolkit/react"
 import debounce from "debounce"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useDeepCompareEffect, useEvent, useMount } from "react-use"
+import { webSocketService } from "../../services/websocket/WebSocketService"
 import { Virtuoso, type VirtuosoHandle } from "react-virtuoso"
 import styled from "styled-components"
 import {
@@ -267,44 +268,47 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 	}, [modifiedMessages, clineAsk, enableButtons, primaryButtonText])
 
 	const handleSendMessage = useCallback(
-		(text: string, images: string[]) => {
-			text = text.trim()
-			if (text || images.length > 0) {
-				if (messages.length === 0) {
-					vscode.postMessage({ type: "newTask", text, images })
-				} else if (clineAsk) {
-					switch (clineAsk) {
-						case "followup":
-						case "tool":
-						case "browser_action_launch":
-						case "command": // user can provide feedback to a tool or command use
-						case "command_output": // user can send input to command stdin
-						case "use_mcp_server":
-						case "completion_result": // if this happens then the user has feedback for the completion result
-						case "resume_task":
-						case "resume_completed_task":
-						case "mistake_limit_reached":
-							vscode.postMessage({
-								type: "askResponse",
-								askResponse: "messageResponse",
-								text,
-								images,
-							})
-							break
-						// there is no other case that a textfield should be enabled
-					}
-				}
-				setInputValue("")
-				setTextAreaDisabled(true)
-				setSelectedImages([])
-				setClineAsk(undefined)
-				setEnableButtons(false)
-				// setPrimaryButtonText(undefined)
-				// setSecondaryButtonText(undefined)
-				disableAutoScrollRef.current = false
-			}
-		},
-		[messages.length, clineAsk],
+	  (text: string, images: string[]) => {
+	    text = text.trim()
+	    if (text || images.length > 0) {
+	      if (messages.length === 0) {
+	        vscode.postMessage({ type: "newTask", text, images })
+	      } else if (clineAsk) {
+	        switch (clineAsk) {
+	          case "followup":
+	          case "tool":
+	          case "browser_action_launch":
+	          case "command": // user can provide feedback to a tool or command use
+	          case "command_output": // user can send input to command stdin
+	          case "use_mcp_server":
+	          case "completion_result": // if this happens then the user has feedback for the completion result
+	          case "resume_task":
+	          case "resume_completed_task":
+	          case "mistake_limit_reached":
+	            vscode.postMessage({
+	              type: "askResponse",
+	              askResponse: "messageResponse",
+	              text,
+	              images,
+	            })
+	            break
+	          // there is no other case that a textfield should be enabled
+	        }
+	      }
+	      // Notify WebSocket service that message was sent
+	      webSocketService.handleMessageSent(text)
+	      
+	      setInputValue("")
+	      setTextAreaDisabled(true)
+	      setSelectedImages([])
+	      setClineAsk(undefined)
+	      setEnableButtons(false)
+	      // setPrimaryButtonText(undefined)
+	      // setSecondaryButtonText(undefined)
+	      disableAutoScrollRef.current = false
+	    }
+	  },
+	  [messages.length, clineAsk],
 	)
 
 	const startNewTask = useCallback(() => {
@@ -385,39 +389,47 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 		!selectedModelInfo.supportsImages || textAreaDisabled || selectedImages.length >= MAX_IMAGES_PER_MESSAGE
 
 	const handleMessage = useCallback(
-		(e: MessageEvent) => {
-			const message: ExtensionMessage = e.data
-			switch (message.type) {
-				case "action":
-					switch (message.action!) {
-						case "didBecomeVisible":
-							if (!isHidden && !textAreaDisabled && !enableButtons) {
-								textAreaRef.current?.focus()
-							}
-							break
-					}
-					break
-				case "selectedImages":
-					const newImages = message.images ?? []
-					if (newImages.length > 0) {
-						setSelectedImages((prevImages) =>
-							[...prevImages, ...newImages].slice(0, MAX_IMAGES_PER_MESSAGE),
-						)
-					}
-					break
-				case "invoke":
-					switch (message.invoke!) {
-						case "sendMessage":
-							handleSendMessage(message.text ?? "", message.images ?? [])
-							break
-						case "primaryButtonClick":
-							handlePrimaryButtonClick()
-							break
-						case "secondaryButtonClick":
-							handleSecondaryButtonClick()
-							break
-					}
-			}
+	  (e: MessageEvent) => {
+	    const message: ExtensionMessage = e.data
+	    switch (message.type) {
+	      case "action":
+	        switch (message.action!) {
+	          case "didBecomeVisible":
+	            if (!isHidden && !textAreaDisabled && !enableButtons) {
+	              textAreaRef.current?.focus()
+	            }
+	            break
+	        }
+	        break
+	      case "selectedImages":
+	        const newImages = message.images ?? []
+	        if (newImages.length > 0) {
+	          setSelectedImages((prevImages) =>
+	            [...prevImages, ...newImages].slice(0, MAX_IMAGES_PER_MESSAGE),
+	          )
+	        }
+	        break
+	      case "websocketMessage":
+	        // When receiving a message from WebSocket, set it in the input
+	        if (message.text) {
+	          setInputValue(message.text)
+	          // Auto-send the message
+	          handleSendMessage(message.text, [])
+	        }
+	        break
+	      case "invoke":
+	        switch (message.invoke!) {
+	          case "sendMessage":
+	            handleSendMessage(message.text ?? "", message.images ?? [])
+	            break
+	          case "primaryButtonClick":
+	            handlePrimaryButtonClick()
+	            break
+	          case "secondaryButtonClick":
+	            handleSecondaryButtonClick()
+	            break
+	        }
+	    }
 			// textAreaRef.current is not explicitly required here since react gaurantees that ref will be stable across re-renders, and we're not using its value but its reference.
 		},
 		[

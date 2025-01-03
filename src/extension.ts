@@ -5,6 +5,7 @@ import * as vscode from "vscode"
 import { ClineProvider } from "./core/webview/ClineProvider"
 import { createClineAPI } from "./exports"
 import "./utils/path" // necessary to have access to String.prototype.toPosix
+import { webSocketServer } from "./services/websocket/WebSocketServer"
 import { DIFF_VIEW_URI_SCHEME } from "./integrations/editor/DiffViewProvider"
 
 /*
@@ -47,7 +48,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		vscode.commands.registerCommand("roo-cline.plusButtonClicked", async () => {
 			outputChannel.appendLine("Plus button Clicked")
-			await sidebarProvider.clearTask()
+			await sidebarProvider.taskManager.clearTask()
 			await sidebarProvider.postStateToWebview()
 			await sidebarProvider.postMessageToWebview({ type: "action", action: "chatButtonClicked" })
 		}),
@@ -152,4 +153,5 @@ export function activate(context: vscode.ExtensionContext) {
 // This method is called when your extension is deactivated
 export function deactivate() {
 	outputChannel.appendLine("Cline extension deactivated")
+	webSocketServer.stop()
 }

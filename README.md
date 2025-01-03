@@ -29,6 +29,13 @@ A fork of Cline, an autonomous coding agent, with some additional experimental f
 - Configurable delay after auto-writes to allow diagnostics to detect potential problems
 - Control the number of terminal output lines to pass to the model when executing commands
 - Runs alongside the original Cline
+- Improved architecture with specialized managers:
+  - TaskManager: Handles task operations and history
+  - WebSocketManager: Manages real-time chat synchronization
+  - WebViewManager: Controls UI and interactions
+  - ApiManager: Handles API provider integrations
+  - McpManager: Manages MCP server operations
+  - StateManager: Handles state persistence
 
 ## Disclaimer
 

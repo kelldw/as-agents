@@ -49,6 +49,13 @@ export interface WebviewMessage {
 		| "draggedImages"
 		| "deleteMessage"
 		| "terminalOutputLineLimit"
+		| "webSocketEnabled"
+		| "webSocketPort"
+		| "webSocketHost"
+		| "getWebSocketId"
+		| "webSocketId"
+		| "websocketMessage"
+		| "websocketSendAck"
 	text?: string
 	disabled?: boolean
 	askResponse?: ClineAskResponse

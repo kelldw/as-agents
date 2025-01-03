@@ -1,4 +1,4 @@
-# Roo Cline Changelog
+# AS agents Changelog
 
 ## [2.2.38]
 
@@ -189,7 +189,7 @@
 
 ## [2.1.8]
 
--   Roo Cline now allows configuration of which commands are allowed without approval!
+-   AS agents now allows configuration of which commands are allowed without approval!
 
 ## [2.1.7]
 
@@ -203,7 +203,7 @@
 
 ## [2.1.6]
 
--   Roo Cline now runs in all VSCode-compatible editors
+-   AS agents now runs in all VSCode-compatible editors
 
 ## [2.1.5]
 
@@ -211,11 +211,11 @@
 
 ## [2.1.4]
 
--   Roo Cline now can run side-by-side with Cline
+-   AS agents now can run side-by-side with Cline
 
 ## [2.1.3]
 
--   Roo Cline now allows browser actions without approval when `alwaysAllowBrowser` is true
+-   AS agents now allows browser actions without approval when `alwaysAllowBrowser` is true
 
 ## [2.1.2]
 
